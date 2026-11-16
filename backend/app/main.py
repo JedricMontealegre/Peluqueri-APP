@@ -36,3 +36,9 @@ app.add_middleware(
 @app.get("/health", tags=["System"])
 def health_check():
     return {"status": "ok", "service": "Peluqueri-APP Backend"}
+
+from app.controllers import auth_controller, hairdresser_controller, admin_controller
+
+app.include_router(auth_controller.router, prefix=settings.API_V1_STR)
+app.include_router(hairdresser_controller.router, prefix=settings.API_V1_STR)
+app.include_router(admin_controller.router, prefix=settings.API_V1_STR)
