@@ -83,5 +83,76 @@ class ScheduleResponse(BaseModel):
 
 
 # =========================================================
-# ESPACIO PARA DTOs DE CATÁLOGO Y RESERVAS (Daniel Arias)
+# DTOs DE CATÁLOGO, DISPONIBILIDAD Y RESERVAS (FR-02, FR-03, FR-04, FR-08)
 # =========================================================
+
+class ServiceResponse(BaseModel):
+    id: int
+    name: str
+    description: Optional[str]
+    duration_minutes: int
+    price: float
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class HairdresserPublicResponse(BaseModel):
+    id: int
+    full_name: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TimeSlotResponse(BaseModel):
+    start_time: time
+    end_time: time
+    available: bool = True
+
+
+class AvailabilityResponse(BaseModel):
+    hairdresser_id: int
+    hairdresser_name: str
+    date: date
+    service_id: Optional[int] = None
+    duration_minutes: int
+    slots: list[TimeSlotResponse]
+    cached: bool = False
+
+
+class AppointmentCreateRequest(BaseModel):
+    hairdresser_id: int
+    service_id: int
+    appointment_date: date
+    start_time: time
+    guest_name: Optional[str] = Field(None, min_length=2, max_length=100)
+    guest_phone: Optional[str] = Field(None, min_length=6, max_length=20)
+    guest_email: Optional[str] = Field(None, max_length=120)
+
+
+class AppointmentRescheduleRequest(BaseModel):
+    hairdresser_id: Optional[int] = None
+    appointment_date: date
+    start_time: time
+    guest_phone: Optional[str] = None
+
+
+class AppointmentCancelRequest(BaseModel):
+    guest_phone: Optional[str] = None
+
+
+class AppointmentResponse(BaseModel):
+    id: int
+    hairdresser_id: int
+    hairdresser_name: str
+    service_id: int
+    service_name: str
+    service_price: float
+    duration_minutes: int
+    client_id: Optional[int]
+    client_name: str
+    client_phone: Optional[str]
+    guest_email: Optional[str]
+    appointment_date: date
+    start_time: time
+    end_time: time
+    status: AppointmentStatus
